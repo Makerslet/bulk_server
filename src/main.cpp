@@ -5,6 +5,7 @@
 #include "subscriber_handler_creator.h"
 #include "statistic_formatter.h"
 #include "signals_handler.h"
+#include "async_server.h"
 
 #include <csignal>
 #include <iostream>
@@ -21,10 +22,17 @@
 int main (int argc, char** argv)
 {
     args_parser parser;
-    std::optional<size_t> result = parser.parse(argc, argv);
+    auto result = parser.parse(argc, argv);
     if(!result.has_value())
         return 0;
 
+    bio::io_context io_context;
+
+    server server(io_context, result->port);
+
+    io_context.run();
+
+    /*
     auto cmd_handler = std::make_shared<command_handler>(result.value());
 
     auto console_out_subscriber = std::make_shared<subscriber>(1,
@@ -57,7 +65,7 @@ int main (int argc, char** argv)
     std::cout << statistic_formatter::format(console_out_subscriber->get_worker_context(0)) << std::endl;
     std::cout << statistic_formatter::format(file_out_subscriber->get_worker_context(0)) << std::endl;
     std::cout << statistic_formatter::format(file_out_subscriber->get_worker_context(1)) << std::endl;
-
+*/
     return 0;
 }
 

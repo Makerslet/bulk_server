@@ -9,12 +9,21 @@
 
 namespace bpo = boost::program_options;
 
+struct args_result
+{
+    unsigned short port;
+    size_t bulk_length;
+};
+
 /**
  * @brief Класс парсинга аргументов командной строки
  */
 class args_parser
 {
 public:
+
+    using optional_result = std::optional<args_result>;
+
     /**
      * @brief Конструктор
      */
@@ -26,7 +35,7 @@ public:
      * @arg argv - массив строк аргументов
      * @return Размер блока команд
      */
-    std::optional<size_t> parse(int argc, char** argv);
+    optional_result parse(int argc, char** argv);
 
 private:
     bpo::options_description _description;

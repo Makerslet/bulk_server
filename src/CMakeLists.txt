@@ -16,7 +16,8 @@ add_executable(${TARGET}
     command_handler.h command_handler.cpp
     subscriber.h subscriber.cpp
     subscriber_handler_creator.h subscriber_handler_creator.cpp
-    signals_handler.h signals_handler.cpp)
+    signals_handler.h signals_handler.cpp
+    async_server.h async_server.cpp)
 
 set_target_properties(${TARGET} PROPERTIES
     CXX_STANDARD 17
