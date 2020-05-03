@@ -3,6 +3,7 @@
 
 #include "base/base_command.h"
 #include "base/base_publisher.h"
+#include "commands_factory.h"
 
 #include <memory>
 #include <map>
@@ -58,12 +59,12 @@ public:
      * @brief Метод запуска команды в обработку
      * @param command - команда
      */
-    void add_command(std::unique_ptr<base_command>&& command);
+    void add_command(const std::string& client, const std::string& str);
 
     /**
      * @brief Метод обработки завершения ввода
      */
-    void stop_handling();
+    void stop_handling(const std::string& client);
 
 private:
     /**
@@ -96,6 +97,7 @@ private:
 
     std::vector<commands_description> _commands;
 
+    commands_factory _factory;
     command_handler_statistic _statistic;
 };
 

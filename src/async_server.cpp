@@ -2,59 +2,69 @@
 
 #include <iostream>
 
-session::session(bio::ip::tcp::socket socket)
-  : _socket(std::move(socket))
+session::session(bio::ip::tcp::socket socket,
+                 std::shared_ptr<command_handler> cmd_handler) :
+    _socket(std::move(socket)),
+    _cmd_handler(cmd_handler)
 {
+    auto ep = _socket.remote_endpoint();
+    _str_id = ep.address().to_string() + ":" + std::to_string(ep.port());
 }
 
 void session::start()
 {
-  do_read();
+    read();
 }
 
-void session::do_read()
+void session::read()
 {
-  auto self(shared_from_this());
-  _socket.async_read_some(boost::asio::buffer(_data, max_length),
-      [this, self](boost::system::error_code ec, std::size_t length)
-      {
-        if (!ec)
-        {
-          std::cout << "receive " << length << "=" << std::string{_data, length} << std::endl;
-          do_write(length);
-        }
-      });
+    auto self(shared_from_this());
+    _socket.async_read_some(boost::asio::buffer(_buffer), create_read_lambda());
 }
 
-void session::do_write(std::size_t length)
+void session::handle_request(size_t length)
 {
-  auto self(shared_from_this());
-  boost::asio::async_write(_socket, boost::asio::buffer(_data, length),
-      [this, self](boost::system::error_code ec, std::size_t /*length*/)
-      {
-        if (!ec)
-        {
-          do_read();
-        }
-      });
+    _cmd_handler->add_command(_str_id, std::string(_buffer.data(), length));
 }
 
-server::server(bio::io_context& io_context, unsigned short port)
-  : _acceptor(io_context, bio::ip::tcp::endpoint(bio::ip::tcp::v4(), port))
+void session::finish_handling()
 {
-  do_accept();
+    _cmd_handler->stop_handling(_str_id);
 }
 
-void server::do_accept()
+session::read_cb_signature session::create_read_lambda()
 {
-  _acceptor.async_accept(
-      [this](boost::system::error_code ec, bio::ip::tcp::socket socket)
-      {
-        if (!ec)
-        {
-          std::make_shared<session>(std::move(socket))->start();
-        }
+    auto self(shared_from_this());
+    return [this, self](boost::system::error_code ec, std::size_t length)
+    {
+        if(ec == boost::asio::error::eof || ec == boost::asio::error::connection_reset)
+            finish_handling();
+        else
+            handle_request(length);
+    };
+}
 
-        do_accept();
-      });
+
+server::server(bio::io_context& io_context, unsigned short port,
+               std::shared_ptr<command_handler> cmd_handler) :
+    _acceptor(io_context, bio::ip::tcp::endpoint(bio::ip::tcp::v4(), port)),
+    _cmd_handler(cmd_handler)
+{
+    accept();
+}
+
+void server::accept()
+{
+    _acceptor.async_accept(create_accept_lambda());
+}
+
+server::accept_cb_signature server::create_accept_lambda()
+{
+    return [this](boost::system::error_code ec, bio::ip::tcp::socket socket)
+    {
+        if (!ec == boost::system::errc::success)
+            std::make_shared<session>(std::move(socket))->start();
+
+        accept();
+    };
 }

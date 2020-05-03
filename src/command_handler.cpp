@@ -13,9 +13,11 @@ const command_handler_statistic& command_handler::statistic() const
     return _statistic;
 }
 
-void command_handler::add_command(std::unique_ptr<base_command>&& command)
+void command_handler::add_command(const std::string& client,
+        const std::string& str)
 {
-    switch (command->type()) {
+    auto cmd = _factory.create_command(str);
+    switch (cmd->type()) {
         case command_type::open_scope: {
             handle_open_scope();
             break;
@@ -25,8 +27,8 @@ void command_handler::add_command(std::unique_ptr<base_command>&& command)
             break;
         }
         case command_type::text: {
-            handle_text_command(command->timestamp(),
-                                (dynamic_cast<text_command*>(command.get()))->info());
+            handle_text_command(cmd->timestamp(),
+                                (dynamic_cast<text_command*>(cmd.get()))->info());
             break;
         }
     }

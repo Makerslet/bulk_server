@@ -15,7 +15,7 @@ args_parser::args_parser() :
 
 args_parser::optional_result args_parser::parse(int argc, char **argv)
 {
-    optional_result return_value;
+    args_result args_value;
     try {
         auto parsed_options = boost::program_options::parse_command_line(argc, argv, _description);
         boost::program_options::store(parsed_options, _values_storage);
@@ -23,7 +23,7 @@ args_parser::optional_result args_parser::parse(int argc, char **argv)
         if(_values_storage.count("help"))
         {
             std::cout << _description << std::endl;
-            return return_value;
+            return optional_result();
         }
 
         if(!_values_storage.count("port"))
@@ -36,7 +36,7 @@ args_parser::optional_result args_parser::parse(int argc, char **argv)
             if(port == 0)
                 throw std::logic_error("port can't have 0");
 
-            return_value->port = static_cast<unsigned short>(port);
+            args_value.port = static_cast<unsigned short>(port);
         }
 
         if(!_values_storage.count("length"))
@@ -49,16 +49,15 @@ args_parser::optional_result args_parser::parse(int argc, char **argv)
             if(bulk_length == 0)
                 throw std::logic_error("bulk length can't have 0");
 
-            return_value->bulk_length = static_cast<size_t>(bulk_length);
+            args_value.bulk_length = static_cast<size_t>(bulk_length);
         }
     }
     catch(const std::logic_error& ex)
     {
-        return_value.reset();
-
         std::cout << "error: " << ex.what() << std::endl;
         std::cout << _description;
+        return optional_result();
     }
 
-    return return_value;
+    return optional_result(args_value);
 }
