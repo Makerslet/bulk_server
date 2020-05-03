@@ -2,11 +2,8 @@
 #include "commands.h"
 
 command_handler::command_handler(std::size_t bulk_length) :
-    _bulk_length(bulk_length), _current_scope_level(0)
-{
-    _commands.emplace_back(commands_description());
-    _commands.emplace_back(commands_description());
-}
+    _bulk_length(bulk_length)
+{}
 
 const command_handler_statistic& command_handler::statistic() const
 {
@@ -16,100 +13,71 @@ const command_handler_statistic& command_handler::statistic() const
 void command_handler::add_command(const std::string& client,
         const std::string& str)
 {
+    context_iter iter = create_if_not_exists(client);
+
     auto cmd = _factory.create_command(str);
     switch (cmd->type()) {
         case command_type::open_scope: {
-            handle_open_scope();
+            handle_open_scope(iter);
             break;
         }
         case command_type::close_scope: {
-            handle_close_scope();
+            handle_close_scope(iter);
             break;
         }
         case command_type::text: {
-            handle_text_command(cmd->timestamp(),
-                                (dynamic_cast<text_command*>(cmd.get()))->info());
+            auto timestampt = cmd->timestamp();
+            std::string str = dynamic_cast<text_command*>((cmd.get()))->info();
+            handle_text_command(iter, timestampt, str);
             break;
         }
     }
 }
 
 
-void command_handler::handle_open_scope()
+void command_handler::handle_open_scope(context_iter client_context_iter)
 {
-    ++_statistic.num_lines;
-
-    if(_current_scope_level > 0)
-    {
-        ++_current_scope_level;
-        return;
-    }
-
-    // отправить на выполнение команды нулевого scope
-    // если он не пустой
-    commands_description& commands_scope = _commands[_current_scope_level];
-
-    if(!commands_scope.second.empty())
-    {
-        notify(commands_scope.first, commands_scope.second);
-        commands_scope.second.clear();
-    }
-
-    //проинициализировать вложенный scope
-    _current_scope_level = 1;
-
-    commands_scope = _commands[_current_scope_level];
-    commands_scope.first = 0;
-    commands_scope.second.clear();
+    auto& context = client_context_iter->second;
+    ++context.nested_level;
 }
 
-void command_handler::handle_close_scope()
+void command_handler::handle_close_scope(context_iter client_context_iter)
 {
-    ++_statistic.num_lines;
+    auto& context = client_context_iter->second;
 
-    if(_current_scope_level == 0)
+    if(context.nested_level == 0)
+        throw std::logic_error("Ignore semantically wrong command");
+
+    if(context.nested_level == 1)
     {
-        throw std::logic_error(
-                    "You can't use close scope operator out of scope. "
-                    "This command will be ignored."
-                    );
-    }
-    else if(_current_scope_level == 1)
-    {
-        commands_description& commands = _commands[_current_scope_level];
-        if(!commands.second.empty())
+        if(!context.individual_commands.second.empty())
         {
-            notify(commands.first, commands.second);
-            commands.first = 0;
-            commands.second.clear();
+            notify(context.individual_commands.first,
+                   context.individual_commands.second);
+
+            context.individual_commands.second.clear();
         }
     }
 
-    --_current_scope_level;
+    --context.nested_level;
 }
 
-void command_handler::stop_handling()
+void command_handler::stop_handling_client(const std::string& client)
 {
-    if(_current_scope_level == 0)
-    {
-        commands_description& commands = _commands[_current_scope_level];
-        if(!commands.second.empty())
-            notify(commands.first, commands.second);
-    }
+    _clients_contexts.erase(client);
 }
 
-void command_handler::handle_text_command(uint64_t timestamp, const std::string& str)
+void command_handler::handle_text_command(context_iter client_context_iter,
+            uint64_t timestamp, const std::string& str)
 {
-    ++_statistic.num_lines;
-
-    size_t index = _current_scope_level > 0 ? 1 : 0;
-    commands_description& commands = _commands[index];
+    auto& context = client_context_iter->second;
+    auto& commands = context.nested_level > 0 ? context.individual_commands : _common_commands;
 
     if(commands.second.empty())
         commands.first = timestamp;
     commands.second.push_back(str);
 
-    if(_current_scope_level == 0)
+    if(context.nested_level == 0)
     {
         if(commands.second.size() == _bulk_length)
         {
@@ -119,7 +87,20 @@ void command_handler::handle_text_command(uint64_t timestamp, const std::string&
     }
 }
 
-void command_handler::notify(uint64_t timestamp,const scope_commands& cmds)
+command_handler::context_iter command_handler::create_if_not_exists(const std::string& client)
+{
+    context_iter iter = _clients_contexts.find(client);
+    if(iter == _clients_contexts.end())
+    {
+        auto [inserted_iter, inserted] = _clients_contexts.try_emplace(client);
+        if(inserted)
+            iter = inserted_iter;
+    }
+
+    return iter;
+}
+
+void command_handler::notify(uint64_t timestamp,const commands& cmds)
 {
     ++_statistic.num_blocks;
     _statistic.num_commands += cmds.size();

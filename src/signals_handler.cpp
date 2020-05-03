@@ -14,7 +14,7 @@ void signals_handler::handle_sigint(int)
     auto handler_sptr = _handler.lock();
     if(handler_sptr)
     {
-        handler_sptr->stop_handling();
+        //handler_sptr->stop_handling_client();
         std::cout << statistic_formatter::format(handler_sptr->statistic()) << std::endl;
     }
 

@@ -38,7 +38,7 @@ int main (int argc, char** argv)
     cmd_handler->subscribe(file_out_subscriber);
 
     bio::io_context io_context;
-    server server(io_context, result->port);
+    server server(io_context, result->port, cmd_handler);
     io_context.run();
 
     return 0;

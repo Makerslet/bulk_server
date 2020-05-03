@@ -59,7 +59,7 @@ TEST(COMMAND_HANDLER, DATA_ENDED_IN_BASE_SCOPE)
     std::string command_text("hello_world");
     uint64_t timestamp = 123456;
     cmd_handler.add_command(std::make_unique<text_command>(timestamp, command_text));
-    cmd_handler.stop_handling();
+    cmd_handler.stop_handling_client();
 
     std::vector<std::string> expected;
     expected.push_back(command_text);
@@ -144,7 +144,7 @@ TEST(COMMAND_HANDLER, FORCED_CLOSURE_NESTED_SCOPE)
     uint64_t timestamp = 123456;
     cmd_handler.add_command(std::make_unique<open_scope_command>(11));
     cmd_handler.add_command(std::make_unique<text_command>(timestamp, command_text));
-    cmd_handler.stop_handling();
+    cmd_handler.stop_handling_client();
 
     std::vector<std::string> expected;
     ASSERT_TRUE(expected == subscriber->output());

@@ -6,7 +6,7 @@
 #include "commands_factory.h"
 
 #include <memory>
-#include <map>
+#include <unordered_map>
 
 /**
  * @brief Класс статистики обработки команд
@@ -36,11 +36,19 @@ class command_handler : public base_publisher
     /**
      * @brief Команды принадлежащие определенному scope
      */
-    using scope_commands = std::vector<std::string>;
+    using commands = std::vector<std::string>;
     /**
      * @brief Временная метка первой команды с scope и список команд
      */
-    using commands_description = std::pair<uint64_t, scope_commands>;
+    using commands_description = std::pair<uint64_t, commands>;
+
+    struct client_context
+    {
+        size_t nested_level = 0;
+        commands_description individual_commands;
+    };
+
+    using context_iter = std::unordered_map<std::string, client_context>::iterator;
 
 public:
     /**
@@ -64,7 +72,7 @@ public:
     /**
      * @brief Метод обработки завершения ввода
      */
-    void stop_handling(const std::string& client);
+    void stop_handling_client(const std::string &client);
 
 private:
     /**
@@ -72,30 +80,31 @@ private:
      * @param timestamp - временная метка первой команды
      * @param string - информационная строка
      */
-    void notify(uint64_t timestamp, const scope_commands &cmds);
+    void notify(uint64_t timestamp, const commands &cmds);
 
     /**
      * @brief Метод обработки команды открытия scope
      */
-    void handle_open_scope();
+    void handle_open_scope(context_iter client_context_iter);
 
     /**
      * @brief Метод обработки команды закрытия scope
      */
-    void handle_close_scope();
+    void handle_close_scope(context_iter client_context_iter);
 
     /**
      * @brief Метод обработки текстовой команды
      * @param timestamp - временная метка
      * @param str - текст команды
      */
-    void handle_text_command(uint64_t timestamp, const std::string& str);
+    void handle_text_command(context_iter client_context_iter, uint64_t timestamp, const std::string& str);
+
+    context_iter create_if_not_exists(const std::string& client);
 
 private:
     std::size_t _bulk_length;
-    std::size_t _current_scope_level;
-
-    std::vector<commands_description> _commands;
+    commands_description _common_commands;
+    std::unordered_map<std::string, client_context> _clients_contexts;
 
     commands_factory _factory;
     command_handler_statistic _statistic;
