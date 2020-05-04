@@ -1,13 +1,11 @@
-#include "commands_factory.h"
 #include "command_handler.h"
 #include "subscriber.h"
 #include "args_parser.h"
 #include "subscriber_handler_creator.h"
-#include "statistic_formatter.h"
 #include "signals_handler.h"
 #include "async_server.h"
 
-#include <csignal>
+#include <boost/asio/signal_set.hpp>
 #include <iostream>
 
 /**
@@ -38,7 +36,12 @@ int main (int argc, char** argv)
     cmd_handler->subscribe(file_out_subscriber);
 
     bio::io_context io_context;
+
     server server(io_context, result->port, cmd_handler);
+
+    boost::asio::signal_set sigs(io_context, SIGINT);
+    sigs.async_wait(signals_handler::create_sigint_handler(server));
+
     io_context.run();
 
     return 0;

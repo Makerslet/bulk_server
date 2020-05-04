@@ -9,6 +9,9 @@
 
 namespace bpo = boost::program_options;
 
+/**
+ * @brief Структура результатов парсинга
+ */
 struct args_result
 {
     unsigned short port;

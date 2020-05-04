@@ -1,36 +1,39 @@
 #include "command_handler.h"
 #include "commands.h"
 
+#include <iostream>
+
 command_handler::command_handler(std::size_t bulk_length) :
     _bulk_length(bulk_length)
 {}
 
-const command_handler_statistic& command_handler::statistic() const
-{
-    return _statistic;
-}
 
 void command_handler::add_command(const std::string& client,
         const std::string& str)
 {
     context_iter iter = create_if_not_exists(client);
 
-    auto cmd = _factory.create_command(str);
-    switch (cmd->type()) {
-        case command_type::open_scope: {
-            handle_open_scope(iter);
-            break;
+    try {
+        auto cmd = _factory.create_command(str);
+        switch (cmd->type()) {
+            case command_type::open_scope: {
+                handle_open_scope(iter);
+                break;
+            }
+            case command_type::close_scope: {
+                handle_close_scope(iter);
+                break;
+            }
+            case command_type::text: {
+                auto timestampt = cmd->timestamp();
+                std::string str = dynamic_cast<text_command*>((cmd.get()))->info();
+                handle_text_command(iter, timestampt, str);
+                break;
+            }
         }
-        case command_type::close_scope: {
-            handle_close_scope(iter);
-            break;
-        }
-        case command_type::text: {
-            auto timestampt = cmd->timestamp();
-            std::string str = dynamic_cast<text_command*>((cmd.get()))->info();
-            handle_text_command(iter, timestampt, str);
-            break;
-        }
+    }
+    catch(const std::logic_error& ex) {
+        std::cout << ex.what() << std::endl;
     }
 }
 
@@ -65,6 +68,12 @@ void command_handler::handle_close_scope(context_iter client_context_iter)
 void command_handler::stop_handling_client(const std::string& client)
 {
     _clients_contexts.erase(client);
+}
+
+void command_handler::stop()
+{
+    if(!_common_commands.second.empty())
+        notify(_common_commands.first, _common_commands.second);
 }
 
 void command_handler::handle_text_command(context_iter client_context_iter,
@@ -102,9 +111,6 @@ command_handler::context_iter command_handler::create_if_not_exists(const std::s
 
 void command_handler::notify(uint64_t timestamp,const commands& cmds)
 {
-    ++_statistic.num_blocks;
-    _statistic.num_commands += cmds.size();
-
     auto task_ptr = std::make_shared<subscriber_task>(timestamp, cmds);
 
     for(auto subscriber : _subscribers)

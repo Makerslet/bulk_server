@@ -1,5 +1,6 @@
 #include "subscriber.h"
 
+#include <iostream>
 #include <sstream>
 
 subscriber::subscriber(size_t num_workers, subscriber_task_handler task) :
@@ -17,6 +18,11 @@ subscriber::subscriber(size_t num_workers, subscriber_task_handler task) :
         _workers.emplace_back(std::make_pair(context, std::thread(t)));
         _workers[i].second.detach();
     }
+}
+
+subscriber::~subscriber()
+{
+    _cmds_queue->shutdown();
 }
 
 void subscriber::update(task_sptr task)
@@ -44,9 +50,14 @@ worker_task subscriber::create_worker_handler(context_sptr context, queue_sptr q
                                subscriber_task_handler task)
 {
     return [context, queue, task]() {
-        while(true)
+        task_sptr command;
+
+        while(queue->is_running())
         {
-            task_sptr command = queue->pop();
+            bool result = queue->pop(command);
+            if(!result)
+                continue;
+
             context->num_blocks += 1;
             context->num_commands += command->commands.size();
 

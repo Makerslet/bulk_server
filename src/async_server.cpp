@@ -64,6 +64,12 @@ void server::accept()
     _acceptor.async_accept(create_accept_lambda());
 }
 
+void server::stop_accepting()
+{
+    _acceptor.close();
+    _cmd_handler->stop();
+}
+
 server::accept_cb_signature server::create_accept_lambda()
 {
     return [this](boost::system::error_code ec, bio::ip::tcp::socket socket)

@@ -42,12 +42,18 @@ class command_handler : public base_publisher
      */
     using commands_description = std::pair<uint64_t, commands>;
 
+    /**
+     * @brief Структура контекста пользователя для обработки индивидеальных команд
+     */
     struct client_context
     {
         size_t nested_level = 0;
         commands_description individual_commands;
     };
 
+    /**
+     * @brief Итератор на контекст пользователя
+     */
     using context_iter = std::unordered_map<std::string, client_context>::iterator;
 
 public:
@@ -58,21 +64,20 @@ public:
     command_handler(std::size_t bulk_length);
 
     /**
-     * @brief Метод полчения полной статистики
-     * @return Статистика обработки
-     */
-    const command_handler_statistic& statistic() const;
-
-    /**
      * @brief Метод запуска команды в обработку
      * @param command - команда
      */
     void add_command(const std::string& client, const std::string& str);
 
     /**
-     * @brief Метод обработки завершения ввода
+     * @brief Метод обработки завершения обработки команд от клиента
      */
     void stop_handling_client(const std::string &client);
+
+    /**
+     * @brief Метод глобальной остановки обработки комманд
+     */
+    void stop();
 
 private:
     /**
@@ -99,6 +104,11 @@ private:
      */
     void handle_text_command(context_iter client_context_iter, uint64_t timestamp, const std::string& str);
 
+    /**
+     * @brief Метод создания контекста пользователя, в случае если он не существует
+     * @param client - текстовый идентификатор клиента
+     * @return Итератор на контекст клиента
+     */
     context_iter create_if_not_exists(const std::string& client);
 
 private:
@@ -107,7 +117,6 @@ private:
     std::unordered_map<std::string, client_context> _clients_contexts;
 
     commands_factory _factory;
-    command_handler_statistic _statistic;
 };
 
 #endif // COMMAND_HANDLER_H

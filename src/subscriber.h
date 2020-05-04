@@ -32,6 +32,11 @@ public:
     subscriber(size_t num_workers, subscriber_task_handler subscriber_task);
 
     /**
+     * @brief Деструктор
+     */
+    ~subscriber();
+
+    /**
      * @brief Обработка команды от publisher'а
      * @param cmds - набор комманд для обработки
      */
