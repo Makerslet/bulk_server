@@ -1,8 +1,6 @@
 #include "command_handler.h"
 #include "commands.h"
 
-#include <iostream>
-
 command_handler::command_handler(std::size_t bulk_length) :
     _bulk_length(bulk_length)
 {}
@@ -12,28 +10,23 @@ void command_handler::add_command(const std::string& client,
         const std::string& str)
 {
     context_iter iter = create_if_not_exists(client);
+    auto cmd = _factory.create_command(str);
 
-    try {
-        auto cmd = _factory.create_command(str);
-        switch (cmd->type()) {
-            case command_type::open_scope: {
-                handle_open_scope(iter);
-                break;
-            }
-            case command_type::close_scope: {
-                handle_close_scope(iter);
-                break;
-            }
-            case command_type::text: {
-                auto timestampt = cmd->timestamp();
-                std::string str = dynamic_cast<text_command*>((cmd.get()))->info();
-                handle_text_command(iter, timestampt, str);
-                break;
-            }
+    switch (cmd->type()) {
+        case command_type::open_scope: {
+            handle_open_scope(iter);
+            break;
         }
-    }
-    catch(const std::logic_error& ex) {
-        std::cout << ex.what() << std::endl;
+        case command_type::close_scope: {
+            handle_close_scope(iter);
+            break;
+        }
+        case command_type::text: {
+            auto timestampt = cmd->timestamp();
+            std::string str = dynamic_cast<text_command*>((cmd.get()))->info();
+            handle_text_command(iter, timestampt, str);
+            break;
+        }
     }
 }
 

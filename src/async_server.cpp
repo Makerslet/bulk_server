@@ -27,7 +27,13 @@ void session::handle_request(size_t length)
     std::string full_str(_buffer.data(), length);
     size_t index = full_str.find_first_of("\n\r");
 
-    _cmd_handler->add_command(_str_id, full_str.substr(0, index));
+    try {
+        _cmd_handler->add_command(_str_id, full_str.substr(0, index));
+    }
+    catch(const std::logic_error& ex) {
+        std::cout << ex.what() << std::endl;
+    }
+
 }
 
 void session::finish_handling()
