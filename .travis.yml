@@ -9,6 +9,7 @@ before_script:
 - sudo apt-get install doxygen
 - sudo apt-get install graphviz
 - sudo scripts/conan_install_script.sh
+- sudo scripts/config_boost.sh
 script:
 - scripts/conan_config.sh
 - cmake .
