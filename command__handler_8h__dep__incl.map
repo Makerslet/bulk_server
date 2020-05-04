@@ -1,0 +1,10 @@
+<map id="src/command_handler.h" name="src/command_handler.h">
+<area shape="rect" id="node2" href="$async__server_8h.html" title="src/async_server.h" alt="" coords="233,80,375,107"/>
+<area shape="rect" id="node5" href="$main_8cpp.html" title="src/main.cpp" alt="" coords="338,229,443,256"/>
+<area shape="rect" id="node7" href="$command__handler_8cpp.html" title="src/command_handler.cpp" alt="" coords="479,80,671,107"/>
+<area shape="rect" id="node8" href="$statistic__formatter_8h.html" title="src/statistic_formatter.h" alt="" coords="695,80,873,107"/>
+<area shape="rect" id="node3" href="$async__server_8cpp.html" title="src/async_server.cpp" alt="" coords="196,155,353,181"/>
+<area shape="rect" id="node4" href="$signals__handler_8h.html" title="src/signals_handler.h" alt="" coords="13,155,171,181"/>
+<area shape="rect" id="node6" href="$signals__handler_8cpp.html" title="src/signals_handler.cpp" alt="" coords="5,229,179,256"/>
+<area shape="rect" id="node9" href="$statistic__formatter_8cpp.html" title="src/statistic_formatter.cpp" alt="" coords="688,155,880,181"/>
+</map>
