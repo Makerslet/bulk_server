@@ -75,15 +75,15 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:abee46f83d4a796a490746d4baf55313c"><td class="memItemLeft" align="right" valign="top">static sig_handler_signature&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsignals__handler.html#abee46f83d4a796a490746d4baf55313c">create_sigint_handler</a> (<a class="el" href="classserver.html">server</a> &amp;srv)</td></tr>
-<tr class="memdesc:abee46f83d4a796a490746d4baf55313c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Генератор обработчика сигнала (SIGINT)  <a href="#abee46f83d4a796a490746d4baf55313c">More...</a><br /></td></tr>
-<tr class="separator:abee46f83d4a796a490746d4baf55313c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2db1a0006b7fb90257b22570100e0fd"><td class="memItemLeft" align="right" valign="top">static sig_handler_signature&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsignals__handler.html#af2db1a0006b7fb90257b22570100e0fd">create_sigint_handler</a> (<a class="el" href="classserver.html">server</a> &amp;srv, std::vector&lt; std::weak_ptr&lt; <a class="el" href="classbase__workers__keeper.html">base_workers_keeper</a> &gt;&gt; workers)</td></tr>
+<tr class="memdesc:af2db1a0006b7fb90257b22570100e0fd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Генератор обработчика сигнала (SIGINT)  <a href="#af2db1a0006b7fb90257b22570100e0fd">More...</a><br /></td></tr>
+<tr class="separator:af2db1a0006b7fb90257b22570100e0fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Класс содержащий генератор колбека для обработки сигнала SIGINT. </p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
-<a id="abee46f83d4a796a490746d4baf55313c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abee46f83d4a796a490746d4baf55313c">&#9670;&nbsp;</a></span>create_sigint_handler()</h2>
+<a id="af2db1a0006b7fb90257b22570100e0fd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af2db1a0006b7fb90257b22570100e0fd">&#9670;&nbsp;</a></span>create_sigint_handler()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -95,8 +95,18 @@ Static Public Member Functions</h2></td></tr>
           <td class="memname">signals_handler::sig_handler_signature signals_handler::create_sigint_handler </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="classserver.html">server</a> &amp;&#160;</td>
-          <td class="paramname"><em>srv</em></td><td>)</td>
+          <td class="paramname"><em>srv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">std::vector&lt; std::weak_ptr&lt; <a class="el" href="classbase__workers__keeper.html">base_workers_keeper</a> &gt;&gt;&#160;</td>
+          <td class="paramname"><em>workers</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>

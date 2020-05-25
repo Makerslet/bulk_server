@@ -13,6 +13,7 @@ var searchData=
   ['stop',['stop',['../classcommand__handler.html#a007dffacab15b099606675bbb78ffe24',1,'command_handler']]],
   ['stop_5faccepting',['stop_accepting',['../classserver.html#aaaa23ab550da2cce2a433eb688ef05d5',1,'server']]],
   ['stop_5fhandling_5fclient',['stop_handling_client',['../classcommand__handler.html#a13f8ea6fc19910ff536f09c795f50b54',1,'command_handler']]],
+  ['stop_5fworkers',['stop_workers',['../classbase__workers__keeper.html#a136a4304ed994af94e03c232e53ed1f7',1,'base_workers_keeper::stop_workers()'],['../classsubscriber.html#a730ed2d84c9c1087aba40bd549258af2',1,'subscriber::stop_workers()']]],
   ['subscribe',['subscribe',['../structbase__publisher.html#a46c53c3d19629c3844c6a2baefd58d96',1,'base_publisher']]],
   ['subscriber',['subscriber',['../classsubscriber.html',1,'subscriber'],['../classsubscriber.html#a6c59f40ec65a2fb28630e3ff25801634',1,'subscriber::subscriber()']]],
   ['subscriber_2ecpp',['subscriber.cpp',['../subscriber_8cpp.html',1,'']]],

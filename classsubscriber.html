@@ -108,6 +108,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a945cd167228dac28a211682e72b44dda"><td class="memItemLeft" align="right" valign="top"><a class="el" href="base__workers__keeper_8h.html#a6b13a9695d4160af8b13ca577ed86b3c">context_sptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsubscriber.html#a945cd167228dac28a211682e72b44dda">get_worker_context</a> (size_t worker_index) override</td></tr>
 <tr class="memdesc:a945cd167228dac28a211682e72b44dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Получение контекста worker'а  <a href="#a945cd167228dac28a211682e72b44dda">More...</a><br /></td></tr>
 <tr class="separator:a945cd167228dac28a211682e72b44dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a730ed2d84c9c1087aba40bd549258af2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classsubscriber.html#a730ed2d84c9c1087aba40bd549258af2">stop_workers</a> () override</td></tr>
+<tr class="memdesc:a730ed2d84c9c1087aba40bd549258af2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Остановка потоков worker'ов  <a href="#a730ed2d84c9c1087aba40bd549258af2">More...</a><br /></td></tr>
+<tr class="separator:a730ed2d84c9c1087aba40bd549258af2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_structbase__subscriber"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_structbase__subscriber')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="structbase__subscriber.html">base_subscriber</a></td></tr>
 <tr class="memitem:ab24fe45fa1e2a8d4b158c84d5f65eb81 inherit pub_methods_structbase__subscriber"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbase__subscriber.html#ab24fe45fa1e2a8d4b158c84d5f65eb81">~base_subscriber</a> ()=default</td></tr>
 <tr class="memdesc:ab24fe45fa1e2a8d4b158c84d5f65eb81 inherit pub_methods_structbase__subscriber"><td class="mdescLeft">&#160;</td><td class="mdescRight">Деструктор подписчика  <a href="structbase__subscriber.html#ab24fe45fa1e2a8d4b158c84d5f65eb81">More...</a><br /></td></tr>
@@ -234,6 +237,35 @@ Public Member Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>Число worker'ов </dd></dl>
 
 <p>Implements <a class="el" href="classbase__workers__keeper.html#a774b56a730e8a59e2cb56cdee414656f">base_workers_keeper</a>.</p>
+
+</div>
+</div>
+<a id="a730ed2d84c9c1087aba40bd549258af2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a730ed2d84c9c1087aba40bd549258af2">&#9670;&nbsp;</a></span>stop_workers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void subscriber::stop_workers </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Остановка потоков worker'ов </p>
+
+<p>Implements <a class="el" href="classbase__workers__keeper.html#a136a4304ed994af94e03c232e53ed1f7">base_workers_keeper</a>.</p>
 
 </div>
 </div>
