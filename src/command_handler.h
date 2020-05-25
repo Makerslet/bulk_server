@@ -112,6 +112,7 @@ private:
     context_iter create_if_not_exists(const std::string& client);
 
 private:
+    bool _is_running;
     std::size_t _bulk_length;
     commands_description _common_commands;
     std::unordered_map<std::string, client_context> _clients_contexts;

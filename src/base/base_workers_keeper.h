@@ -56,6 +56,7 @@ public:
 
     virtual size_t num_workers() const = 0;
     virtual context_sptr get_worker_context(size_t worker_index) = 0;
+    virtual void stop_workers() = 0;
 };
 
 #endif // BASE_WORKERS_KEEPER_H

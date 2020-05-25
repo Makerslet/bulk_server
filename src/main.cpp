@@ -40,7 +40,8 @@ int main (int argc, char** argv)
     server server(io_context, result->port, cmd_handler);
 
     boost::asio::signal_set sigs(io_context, SIGINT);
-    sigs.async_wait(signals_handler::create_sigint_handler(server));
+    sigs.async_wait(signals_handler::create_sigint_handler(server, {console_out_subscriber,
+            file_out_subscriber}));
 
     io_context.run();
 

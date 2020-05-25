@@ -2,6 +2,7 @@
 #include "commands.h"
 
 command_handler::command_handler(std::size_t bulk_length) :
+    _is_running(true),
     _bulk_length(bulk_length)
 {}
 
@@ -9,6 +10,9 @@ command_handler::command_handler(std::size_t bulk_length) :
 void command_handler::add_command(const std::string& client,
         const std::string& str)
 {
+    if(!_is_running)
+        return;
+
     context_iter iter = create_if_not_exists(client);
     auto cmd = _factory.create_command(str);
 
@@ -65,6 +69,8 @@ void command_handler::stop_handling_client(const std::string& client)
 
 void command_handler::stop()
 {
+    _is_running = false;
+
     if(!_common_commands.second.empty())
         notify(_common_commands.first, _common_commands.second);
 }
